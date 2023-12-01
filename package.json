@@ -4,13 +4,14 @@
   "description": "Figma Plugin that Extracts Styles to CSS",
   "main": "code.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "watch": "yarn build -- --watch"
+    "build": "esbuild src/code.ts --bundle --outfile=code.js",
+    "watch": "yarn build --watch"
   },
   "author": "Segrey Lisovskiy <lisovskiyserj@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "@figma/plugin-typings": "*",
-    "typescript": "*"
-  }
+    "esbuild": "^0.19.8"
+  },
+  "type": "module"
 }
