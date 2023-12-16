@@ -1,4 +1,4 @@
-import { COLLECTION_NAME, DESKTOP_NAME, MOBILE_NAME } from './constrants'
+import { COLLECTION_NAME, DESKTOP_NAME, MOBILE_NAME, DESKTOP_BREAKPOINT } from './constrants'
 
 import {
   Space,
@@ -25,31 +25,28 @@ const generateConfigCSS = (
   const spacesCSSVariables = spaces && generateSpacesCSSVariables(spaces)
   const textCSSVariables = textStyles && generateTextCSSVariables(textStyles)
 
-  return encodeURIComponent(
-    `${
-      (spacesCSSVariables && spacesCSSVariables.mobile) ||
-      (textCSSVariables && textCSSVariables.mobile)
-        ? `:root {
-${spacesCSSVariables && spacesCSSVariables.mobile ? spacesCSSVariables.mobile + '\n\n' : ''}${
-            textCSSVariables && textCSSVariables.mobile ? textCSSVariables.mobile : ''
-          }
-}
+  const mobileVariablesString = [
+    spacesCSSVariables && spacesCSSVariables.mobile,
+    textCSSVariables && textCSSVariables.mobile,
+  ]
+    .filter((el) => el)
+    .join('\n\n')
 
-`
-        : ''
-    }${
-      (spacesCSSVariables && spacesCSSVariables.desktop) ||
-      (textCSSVariables && textCSSVariables.desktop)
-        ? `@media (min-width: 640px) {
-  :root {
-${spacesCSSVariables && spacesCSSVariables.desktop ? spacesCSSVariables.desktop + '\n\n' : ''}${
-            textCSSVariables && textCSSVariables.desktop ? textCSSVariables.desktop : ''
-          }
-  }
-}
-`
-        : ''
-    }`,
+  const desktopVariablesString = [
+    spacesCSSVariables && spacesCSSVariables.desktop,
+    textCSSVariables && textCSSVariables.desktop,
+  ]
+    .filter((el) => el)
+    .join('\n\n')
+
+  return encodeURIComponent(
+    [
+      mobileVariablesString && `:root {\n${mobileVariablesString}\n}\n`,
+      desktopVariablesString &&
+        `@media (min-width: ${DESKTOP_BREAKPOINT}) {\n  :root {\n${desktopVariablesString}\n  }\n}\n`,
+    ]
+      .filter((el) => el)
+      .join('\n'),
   )
 }
 
