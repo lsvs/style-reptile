@@ -59,7 +59,7 @@ const generateConfigCSS = (
 const generateMainCSS = (results: File[]) =>
   encodeURIComponent(results.map((result) => `@import '${result.fileName}';`).join('\n'))
 
-const main = async () => {
+const main = () => {
   const { collectionId, desktopModeId, mobileModeId } = getIds()
 
   const warnings: string[] = []
@@ -97,8 +97,7 @@ const main = async () => {
   configCSS && results.push({ fileName: 'config.css', css: configCSS })
   spaces && results.push({ fileName: 'paddings.css', css: generatePaddingsCSS(spaces) })
   spaces && results.push({ fileName: 'margins.css', css: generateMarginsCSS(spaces) })
-  textStyles &&
-    results.push({ fileName: 'typography.css', css: await generateTypographyCSS(textStyles) })
+  textStyles && results.push({ fileName: 'typography.css', css: generateTypographyCSS(textStyles) })
 
   const mainCSS = generateMainCSS(results)
   mainCSS && results.push({ fileName: 'main.css', css: mainCSS })

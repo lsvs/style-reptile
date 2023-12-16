@@ -140,14 +140,10 @@ export const generateTextCSSVariables = (textStyles: {
   }
 }
 
-export const generateTypographyCSS = async (textStyles: {
+export const generateTypographyCSS = (textStyles: {
   mobile: ConvertedTextStyle[]
   desktop: ConvertedTextStyle[]
 }) =>
   Array.from(new Set([...textStyles.desktop, ...textStyles.mobile].map((el) => el.name)))
-    .map(
-      (el) => `.text-${el} {
-  font: var(--text-${el});
-}`,
-    )
+    .map((el) => `.text-${el} {\n  font: var(--text-${el});\n}`)
     .join('\n')
