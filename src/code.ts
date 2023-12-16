@@ -120,6 +120,9 @@ const main = () => {
         : ''
     }
   <style>
+  body{
+    color: var(--figma-color-text);
+  }
   a {
     text-decoration: none;
     color: inherit;
@@ -153,6 +156,7 @@ const main = () => {
   </style>
   `,
     {
+      themeColors: true,
       height: (warnings.length + results.length + (warnings.length ? 1 : 0)) * 40 + 20,
     },
   )
