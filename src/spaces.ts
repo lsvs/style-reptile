@@ -1,4 +1,4 @@
-import { COLLECTION_NAME, DESKTOP_NAME, MOBILE_NAME } from './constrants'
+import { COLLECTION_NAME, DESKTOP_NAME, MOBILE_NAME, SPACE_PREFIX } from './constrants'
 
 export type Space = {
   name: string
@@ -35,10 +35,10 @@ export const getSpaces = (
   const spaces = allVariables
     .filter(
       (variable) =>
-        variable.variableCollectionId === collectionId && variable.name.startsWith('space'),
+        variable.variableCollectionId === collectionId && variable.name.startsWith(SPACE_PREFIX),
     )
     .map((variable) => ({
-      name: variable.name.replace(/^space-/, ''),
+      name: variable.name.replace(new RegExp(`^${SPACE_PREFIX}`), ''),
       d: parseInt(variable.valuesByMode[desctopModeId].toString()),
       m: parseInt(variable.valuesByMode[mobileModeId].toString()),
     }))
@@ -46,8 +46,12 @@ export const getSpaces = (
 }
 
 export const generateSpacesCSSVariables = (spaces: Space[]) => {
-  const mobile = spaces.map((space) => `  --space-${space.name}: ${space.m / 10}rem;`).join('\n')
-  const desktop = spaces.map((space) => `    --space-${space.name}: ${space.d / 10}rem;`).join('\n')
+  const mobile = spaces
+    .map((space) => `  --${SPACE_PREFIX}${space.name}: ${space.m / 10}rem;`)
+    .join('\n')
+  const desktop = spaces
+    .map((space) => `    --${SPACE_PREFIX}${space.name}: ${space.d / 10}rem;`)
+    .join('\n')
 
   return { mobile, desktop }
 }
@@ -57,51 +61,51 @@ const generateSpacesCSS = (spaces: Space[], type: 'padding' | 'margin') => {
   const all = spaces
     .map(
       (space) => `.${classPrefix}-${space.name} {
-  ${type}: var(--space-${space.name});
+  ${type}: var(--${SPACE_PREFIX}${space.name});
 }`,
     )
     .join('\n')
   const x = spaces
     .map(
       (space) => `.${classPrefix}x-${space.name} {
-  ${type}-left: var(--space-${space.name});
-  ${type}-right: var(--space-${space.name});
+  ${type}-left: var(--${SPACE_PREFIX}${space.name});
+  ${type}-right: var(--${SPACE_PREFIX}${space.name});
 }`,
     )
     .join('\n')
   const y = spaces
     .map(
       (space) => `.${classPrefix}y-${space.name} {
-  ${type}-top: var(--space-${space.name});
-  ${type}-bottom: var(--space-${space.name});
+  ${type}-top: var(--${SPACE_PREFIX}${space.name});
+  ${type}-bottom: var(--${SPACE_PREFIX}${space.name});
 }`,
     )
     .join('\n')
   const top = spaces
     .map(
       (space) => `.${classPrefix}t-${space.name} {
-  ${type}-top: var(--space-${space.name});
+  ${type}-top: var(--${SPACE_PREFIX}${space.name});
 }`,
     )
     .join('\n')
   const right = spaces
     .map(
       (space) => `.${classPrefix}r-${space.name} {
-  ${type}-right: var(--space-${space.name});
+  ${type}-right: var(--${SPACE_PREFIX}${space.name});
   }`,
     )
     .join('\n')
   const bottom = spaces
     .map(
       (space) => `.${classPrefix}b-${space.name} {
-  ${type}-bottom: var(--space-${space.name});
+  ${type}-bottom: var(--${SPACE_PREFIX}${space.name});
 }`,
     )
     .join('\n')
   const left = spaces
     .map(
       (space) => `.${classPrefix}l-${space.name} {
-  ${type}-left: var(--space-${space.name});
+  ${type}-left: var(--${SPACE_PREFIX}${space.name});
 }`,
     )
     .join('\n')

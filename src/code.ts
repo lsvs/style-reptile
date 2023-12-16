@@ -1,4 +1,10 @@
-import { COLLECTION_NAME, DESKTOP_NAME, MOBILE_NAME, DESKTOP_BREAKPOINT } from './constrants'
+import {
+  COLLECTION_NAME,
+  DESKTOP_NAME,
+  MOBILE_NAME,
+  DESKTOP_BREAKPOINT,
+  SPACE_PREFIX,
+} from './constrants'
 
 import {
   Space,
@@ -69,7 +75,7 @@ const main = async () => {
   } else {
     spaces = getSpaces(collectionId, desktopModeId, mobileModeId)
     if (!spaces.length) {
-      warnings.push('No "space-*" variables found')
+      warnings.push(`No "${SPACE_PREFIX}*" variables found`)
       spaces = undefined
     }
   }
