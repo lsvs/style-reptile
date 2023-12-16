@@ -92,33 +92,34 @@ const main = async () => {
       )
   }
 
-  results.push({ fileName: 'config.css', css: generateConfigCSS(spaces, textStyles) })
+  const configCSS = generateConfigCSS(spaces, textStyles)
+
+  configCSS && results.push({ fileName: 'config.css', css: configCSS })
   spaces && results.push({ fileName: 'paddings.css', css: generatePaddingsCSS(spaces) })
   spaces && results.push({ fileName: 'margins.css', css: generateMarginsCSS(spaces) })
   textStyles &&
     results.push({ fileName: 'typography.css', css: await generateTypographyCSS(textStyles) })
-  results.push({ fileName: 'main.css', css: generateMainCSS(results) })
+
+  const mainCSS = generateMainCSS(results)
+  mainCSS && results.push({ fileName: 'main.css', css: mainCSS })
 
   figma.showUI(
-    `
-  <div style="display: grid">
-    ${results
-      .map(
-        (el) =>
-          `<a href="data:text/plain;charset=utf-8,${el.css}" download="${el.fileName}">📄 ${el.fileName}</a>`,
-      )
-      .join('')}
-  </div>
-  ${
-    warnings.length
-      ? `
-  <div class="warnings">Warnings:
-  <ul>
-      ${warnings.map((el) => `<li>${el}</li>`).join('')}
-  </ul></div>
-  `
-      : ''
-  }
+    `${
+      results.length
+        ? `<div style="display: grid">${results
+            .map(
+              (el) =>
+                `<a href="data:text/plain;charset=utf-8,${el.css}" download="${el.fileName}">📄 ${el.fileName}</a>`,
+            )
+            .join('')}</div>`
+        : ''
+    }${
+      warnings.length
+        ? `<div class="warnings">${
+            results.length ? 'Warnings:' : 'Nothing to generate:'
+          }<ul>${warnings.map((el) => `<li>${el}</li>`).join('')}</ul></div>`
+        : ''
+    }
   <style>
   a {
     text-decoration: none;
