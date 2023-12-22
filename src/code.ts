@@ -4,6 +4,7 @@ import {
   MOBILE_NAME,
   DESKTOP_BREAKPOINT,
   SPACE_PREFIX,
+  SCALES,
 } from './constrants'
 
 import {
@@ -50,6 +51,7 @@ const generateConfigCSS = (
       mobileVariablesString && `:root {\n${mobileVariablesString}\n}\n`,
       desktopVariablesString &&
         `@media (min-width: ${DESKTOP_BREAKPOINT}) {\n  :root {\n${desktopVariablesString}\n  }\n}\n`,
+      (mobileVariablesString || desktopVariablesString) && SCALES,
     ]
       .filter((el) => el)
       .join('\n'),

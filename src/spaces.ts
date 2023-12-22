@@ -92,7 +92,7 @@ const generateSpacesCSS = (spaces: Space[], type: 'padding' | 'margin') => {
     .map(
       (space) => `.${classPrefix}r-${space.name} {
   ${type}-right: var(--${SPACE_PREFIX}${space.name});
-  }`,
+}`,
     )
     .join('\n')
   const bottom = spaces
