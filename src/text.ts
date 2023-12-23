@@ -1,4 +1,5 @@
 import { DESKTOP_NAME, MOBILE_NAME } from './constrants'
+import { SANS_FONTS, SERIF_FONTS, MONO_FONTS } from './googleFonts'
 
 export type ConvertedTextStyle = {
   name: string
@@ -7,7 +8,7 @@ export type ConvertedTextStyle = {
   fontSize: string
   lineHeight: string
   fontFamily: string
-  letterSpacing?: string
+  letterSpacing: string
 }
 
 const parseFontStyle = (fontStyle: string) =>
@@ -86,15 +87,25 @@ const parseLineHeight = (style: TextStyle): string => {
   }
 }
 
-const parseLetterSpacing = (style: TextStyle): string | undefined => {
+const parseLetterSpacing = (style: TextStyle): string => {
   switch (style.letterSpacing.unit) {
     case 'PERCENT':
       return `${Math.round(style.letterSpacing.value * 100) / 10000}em`
     case 'PIXELS':
       return `${Math.round((style.letterSpacing.value / style.fontSize) * 100) / 100}em`
     default:
-      return undefined
+      return '0em'
   }
+}
+
+const parseFontFamily = (fontFamily: string) => {
+  if (fontFamily.toLowerCase().includes(' mono') || MONO_FONTS.includes(fontFamily))
+    return `'${fontFamily}', monospace`
+  if (fontFamily.toLowerCase().includes(' serif') || SERIF_FONTS.includes(fontFamily))
+    return `'${fontFamily}', serif`
+  if (fontFamily.toLowerCase().includes(' sans') || SANS_FONTS.includes(fontFamily))
+    return `'${fontFamily}', sans-serif`
+  return `'${fontFamily}'`
 }
 
 const convertStyle = (style: TextStyle, namePrefix: string): ConvertedTextStyle => ({
@@ -103,7 +114,7 @@ const convertStyle = (style: TextStyle, namePrefix: string): ConvertedTextStyle 
   fontWeight: parseFontWeight(style.fontName.style),
   fontSize: `${style.fontSize / 10}rem`,
   lineHeight: parseLineHeight(style),
-  fontFamily: style.fontName.family,
+  fontFamily: parseFontFamily(style.fontName.family),
   letterSpacing: parseLetterSpacing(style),
 })
 
@@ -127,15 +138,27 @@ export const generateTextCSSVariables = (textStyles: {
   mobile: ConvertedTextStyle[]
   desktop: ConvertedTextStyle[]
 }) => {
-  const generateCSSVariableValue = (style: ConvertedTextStyle): string =>
-    `${style.fontStyle} ${style.fontWeight} ${style.fontSize}/${style.lineHeight} "${style.fontFamily}"`
+  const generateFontVariableValue = (style: ConvertedTextStyle): string =>
+    `${style.fontStyle} ${style.fontWeight} ${style.fontSize} / ${style.lineHeight} ${style.fontFamily}`
 
   return {
     mobile: textStyles.mobile
-      .map((style) => `  --text-${style.name}: ${generateCSSVariableValue(style)};`)
+      .map((style) =>
+        [
+          `  --font-${style.name}: ${generateFontVariableValue(style)};`,
+          `  --letter-spacing-${style.name}: ${style.letterSpacing};`,
+        ].join('\n'),
+      )
       .join('\n'),
     desktop: textStyles.desktop
-      .map((style) => `    --text-${style.name}: ${generateCSSVariableValue(style)};`)
+      .map((style) =>
+        [
+          `    --font-${style.name}: ${generateFontVariableValue(style)};`,
+          `    --letter-spacing-${style.name}: ${style.letterSpacing};`,
+        ]
+          .filter((el) => el)
+          .join('\n'),
+      )
       .join('\n'),
   }
 }
@@ -145,5 +168,8 @@ export const generateTypographyCSS = (textStyles: {
   desktop: ConvertedTextStyle[]
 }) =>
   Array.from(new Set([...textStyles.desktop, ...textStyles.mobile].map((el) => el.name)))
-    .map((el) => `.text-${el} {\n  font: var(--text-${el});\n}`)
+    .map(
+      (el) =>
+        `.text-${el} {\n  font: var(--font-${el});\n  letter-spacing: var(--letter-spacing-${el});\n}`,
+    )
     .join('\n')
