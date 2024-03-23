@@ -10,8 +10,13 @@
   "author": "Segrey Lisovskiy <lisovskiyserj@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "@figma/plugin-typings": "*",
-    "esbuild": "^0.19.8"
+    "@figma/eslint-plugin-figma-plugins": "^0.15.0",
+    "@figma/plugin-typings": "^1.88.0",
+    "@typescript-eslint/eslint-plugin": "^7.3.1",
+    "@typescript-eslint/parser": "^7.3.1",
+    "esbuild": "^0.20.2",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.3"
   },
   "type": "module"
 }

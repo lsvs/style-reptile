@@ -6,8 +6,8 @@ export type Space = {
   m: number
 }
 
-export const getIds = () => {
-  const collections = figma.variables.getLocalVariableCollections()
+export const getIds = async () => {
+  const collections = await figma.variables.getLocalVariableCollectionsAsync()
   const screenCollection = collections.filter((c) => c.name === COLLECTION_NAME)[0]
   if (!screenCollection) {
     return {}
@@ -25,12 +25,12 @@ export const getIds = () => {
   return ids
 }
 
-export const getSpaces = (
+export const getSpaces = async (
   collectionId: string,
   desctopModeId: string,
   mobileModeId: string,
-): Space[] => {
-  const allVariables = figma.variables.getLocalVariables('FLOAT')
+): Promise<Space[]> => {
+  const allVariables = await figma.variables.getLocalVariablesAsync('FLOAT')
 
   const spaces = allVariables
     .filter(

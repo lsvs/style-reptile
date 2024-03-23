@@ -61,8 +61,8 @@ const generateConfigCSS = (
 const generateMainCSS = (results: File[]) =>
   encodeURIComponent(results.map((result) => `@import '${result.fileName}';`).join('\n'))
 
-const main = () => {
-  const { collectionId, desktopModeId, mobileModeId } = getIds()
+const main = async () => {
+  const { collectionId, desktopModeId, mobileModeId } = await getIds()
 
   const warnings: string[] = []
   const results: File[] = []
@@ -75,14 +75,14 @@ const main = () => {
   } else if (!mobileModeId) {
     warnings.push(`No "${MOBILE_NAME}" (mobile) mode found in "${COLLECTION_NAME}" collecton`)
   } else {
-    spaces = getSpaces(collectionId, desktopModeId, mobileModeId)
+    spaces = await getSpaces(collectionId, desktopModeId, mobileModeId)
     if (!spaces.length) {
       warnings.push(`No "${SPACE_PREFIX}*" variables found`)
       spaces = undefined
     }
   }
 
-  const textStyles = getTextStyles()
+  const textStyles = await getTextStyles()
   if (!textStyles) warnings.push(`No "${DESKTOP_NAME}/*", "${MOBILE_NAME}/*" text styles found`)
   else {
     if (!textStyles.desktop.length)

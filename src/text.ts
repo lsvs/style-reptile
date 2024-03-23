@@ -118,8 +118,8 @@ const convertStyle = (style: TextStyle, namePrefix: string): ConvertedTextStyle 
   letterSpacing: parseLetterSpacing(style),
 })
 
-export const getTextStyles = () => {
-  const textStyles = figma.getLocalTextStyles()
+export const getTextStyles = async () => {
+  const textStyles = await figma.getLocalTextStylesAsync()
 
   const mobile: ConvertedTextStyle[] = textStyles
     .filter((style) => style.name.startsWith(`${MOBILE_NAME}/`))
